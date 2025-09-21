@@ -1,0 +1,104 @@
+Prompt de Desenvolvimento: Aplicativo "cDNA Master Mix Calculator"
+Persona: Aja como um Gerente de Produto de Software com experiência em bioinformática, escrevendo um briefing detalhado para uma equipe de desenvolvimento (designers de UI/UX e engenheiros de software) para a criação de um novo aplicativo de laboratório.
+
+Título do Projeto: cDNA Master Mix Calculator Pro
+
+Visão Geral do Projeto:
+Desenvolver um aplicativo de desktop ou web-app intuitivo, chamado "cDNA Master Mix Calculator Pro", para cientistas e pesquisadores de biologia molecular. A ferramenta deve simplificar e padronizar o processo de cálculo de Master Mix para reações de síntese de cDNA, permitindo a personalização de kits, incluindo margem para erro de pipetagem e fornecendo acesso rápido aos parâmetros do termociclador.
+
+Público-Alvo:
+Pesquisadores, estudantes de pós-graduação e técnicos de laboratório que realizam rotineiramente reações de transcrição reversa (RT) e precisam de uma ferramenta confiável para evitar erros de cálculo e desperdício de reagentes.
+
+Requisitos Funcionais (Features)
+FR1: Sistema de Gerenciamento de Kits (Totalmente Editável)
+O núcleo do aplicativo. O usuário não deve estar preso a um único protocolo.
+
+1.1. Criar Novo Kit: O usuário deve poder criar um novo perfil de kit de cDNA do zero.
+
+Campos de Entrada:
+
+Nome do Kit (ex: "SuperScript IV VILO", "ProtoScript II", "Meu Kit Customizado").
+
+Lista de Reagentes: O usuário pode adicionar um número ilimitado de reagentes a este kit. Para cada reagente, ele deve especificar:
+
+Nome do Reagente (ex: "5X VILO Reaction Mix", "10X RT Buffer", "dNTPs").
+
+Volume por Reação (µL) (ex: 4 µL, 2 µL, 1 µL).
+
+1.2. Salvar e Carregar Kits: Os perfis de kits criados devem ser salvos localmente no navegador (usando Local Storage) ou em um arquivo local, permitindo que o usuário os carregue em sessões futuras.
+
+1.3. Editar e Excluir Kits: O usuário deve poder selecionar um kit salvo, editar os nomes/volumes dos reagentes ou excluí-lo completamente.
+
+1.4. Kit Padrão: O aplicativo pode vir com 1 ou 2 kits genéricos pré-carregados como exemplo.
+
+FR2: Calculadora Principal de Master Mix
+A interface principal do aplicativo.
+
+2.1. Inputs do Usuário:
+
+Seleção de Kit: Um menu dropdown para escolher um dos kits salvos (do FR1). Ao selecionar um kit, a lista de reagentes e seus volumes por reação é exibida.
+
+Número de Amostras (N): Um campo numérico para inserir a quantidade de reações a serem preparadas.
+
+Margem de Segurança (Erro de Pipetagem): Duas opções para o usuário escolher:
+
+Opção A: "Amostras Extras": Um campo numérico onde o usuário pode adicionar +1, +2, etc., reações extras ao cálculo. (Cálculo total para N + extras).
+
+Opção B: "Porcentagem Extra": Um campo para adicionar uma porcentagem (ex: 10%) ao volume final. (Cálculo total para N * 1.10).
+
+2.2. Outputs (Resultados em Tempo Real):
+
+Volume do Master Mix: Uma tabela clara exibindo:
+
+Nome do Reagente.
+
+Volume por Reação (µL) (puxado do kit selecionado).
+
+Volume Total para o Master Mix (µL) (calculado como: Volume por Reação * (N + Margem)).
+
+Volume Total Final: A soma de todos os volumes no Master Mix.
+
+FR3: Informações do Protocolo do Termociclador
+Acesso rápido aos parâmetros de reação para evitar consulta a manuais.
+
+3.1. Associação de Protocolo ao Kit: Na tela de criação/edição de kit (FR1), deve haver um campo de texto livre chamado Protocolo do Termociclador. O usuário pode inserir os passos, temperaturas e tempos (ex: "1. Annealing: 65°C por 5 min\n2. Síntese: 50°C por 50 min\n3. Inativação: 85°C por 5 min").
+
+3.2. Exibição do Protocolo: Na tela principal da calculadora, ao lado do nome do kit selecionado, deve haver um pequeno ícone de "informação" ou "termômetro" (🌡️). Ao clicar nele, um pop-up (modal) deve aparecer, exibindo o protocolo associado àquele kit de forma clara e legível.
+
+Fluxo de Uso (User Journey)
+Primeiro Uso: O usuário abre o app. Ele vê um kit de exemplo. Ele clica em "Gerenciar Kits" -> "Criar Novo Kit".
+
+Ele nomeia o kit como "Kit do Lab" e adiciona seus reagentes e volumes específicos:
+
+Buffer 5X: 4 µL
+
+dNTPs: 1 µL
+
+Inibidor RNase: 0.5 µL
+
+Enzima RT: 1 µL
+
+No campo "Protocolo do Termociclador", ele digita as temperaturas e tempos do seu protocolo padrão. Ele clica em "Salvar".
+
+Uso Diário: O usuário volta para a tela principal.
+
+Ele seleciona "Kit do Lab" no dropdown.
+
+Ele insere 8 no campo "Número de Amostras".
+
+Ele escolhe a opção "Amostras Extras" e digita 1 (para preparar um total de 9 reações).
+
+A tabela de resultados é atualizada instantaneamente, mostrando:
+
+Buffer 5X: 36 µL (4 µL * 9)
+
+dNTPs: 9 µL (1 µL * 9)
+
+Inibidor RNase: 4.5 µL (0.5 µL * 9)
+
+Enzima RT: 9 µL (1 µL * 9)
+
+Ele esquece a temperatura de anelamento. Ele clica no ícone de termômetro ao lado do nome do kit. Um pop-up aparece com o protocolo que ele salvou.
+
+Chamada à Ação para a Equipe:
+Sua tarefa é projetar a interface e desenvolver a lógica para este aplicativo. Priorize uma UI limpa e funcional. A lógica de cálculo deve ser robusta e reativa, atualizando os resultados em tempo real à medida que o usuário ajusta os inputs. A persistência de dados dos kits é crucial para a usabilidade a longo prazo.
