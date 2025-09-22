@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 // --- NOVO ---: Adicionado novos ícones
 import { Thermometer, Settings, Plus, Edit, Trash2, Info, Upload, Download, Copy } from 'lucide-react' 
+import Footer from './Footer.jsx';
 
 
 // Kit padrão de exemplo
@@ -252,10 +253,10 @@ function App() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-            cDNA Master Mix Calculator Pro
+            Master Mix Calculator
           </h1>
           <p className="text-lg text-gray-600">
-            Ferramenta profissional para cálculo de Master Mix em síntese de cDNA
+            Ferramenta profissional para cálculo de Master Mix
           </p>
         </div>
 
@@ -396,6 +397,8 @@ function App() {
             <div className="flex gap-2 justify-end"><Button variant="outline" onClick={() => setIsKitModalOpen(false)}>Cancelar</Button><Button onClick={saveKit}>{editingKit ? 'Salvar Alterações' : 'Criar Kit'}</Button></div>
           </div></DialogContent>
         </Dialog>
+
+            <Footer />
       </div>
     </div>
   )
