@@ -48,3 +48,19 @@
     --ring: 212.7 26.8% 83.9%;
   }
 }
+/* Na visualização de tela, esconde o conteúdo de impressão */
+.printable-content {
+  display: none;
+}
+
+@media print {
+  /* Na impressão, esconde a interface principal */
+  .main-interface {
+    display: none;
+  }
+
+  /* Na impressão, mostra o conteúdo que estava escondido */
+  .printable-content {
+    display: block;
+  }
+}

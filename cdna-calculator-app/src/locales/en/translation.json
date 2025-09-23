@@ -1,0 +1,59 @@
+{
+  "title": "Master Mix Calculator Pro",
+  "subtitle": "Professional tool for calculating reagents in lab protocols",
+  "settings": {
+    "title": "Settings",
+    "description": "Configure your kit and reaction parameters",
+    "kitLabel": "Reagent Kit",
+    "samplesLabel": "Number of Samples",
+    "safetyMarginLabel": "Safety Margin",
+    "extraSamples": "Extra Samples",
+    "extraPercentage": "Extra Percentage (%)"
+  },
+  "buttons": {
+    "addKit": "Add New Kit",
+    "addReagent": "Add Reagent",
+    "manageKits": "Manage Kits",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "import": "Import Kits (.json)",
+    "export": "Export Kits (.json)",
+    "cancel": "Cancel",
+    "createKit": "Create Kit",
+    "saveChanges": "Save Changes",
+    "printProtocol": "Print Protocol"
+  },
+  "results": {
+    "title": "Master Mix Results",
+    "description": "Volumes calculated for {{count}} reactions",
+    "reagent": "Reagent",
+    "volumePerReaction": "Volume/Reaction (µL)",
+    "totalVolume": "Total Volume (µL)",
+    "totalFinalVolume": "Total Final Volume:"
+  },
+  "savedKits": {
+    "title": "Saved Kits",
+    "description": "Manage, import, or export your custom kits",
+    "reagentsCount": "({{count}} reagents)"
+  },
+  "kitModal": {
+    "createTitle": "Create New Kit",
+    "editTitle": "Edit Kit",
+    "description": "Configure your kit's reagents, protocol, and notes",
+    "kitNameLabel": "Kit Name",
+    "reagentsLabel": "Reagents",
+    "reagentNameLabel": "Reagent Name",
+    "volumeLabel": "Volume (µL)",
+    "protocolLabel": "Thermocycler Protocol (Optional)",
+    "notesLabel": "Notes (Optional)"
+  },
+ "placeholders": {
+  "kitName": "e.g., SuperScript IV VILO",
+  "reagentName": "e.g., 5X Reaction Buffer",
+  "protocol": "e.g., 1. Annealing: 65°C for 5 min\n2. Synthesis: 50°C for 50 min",
+  "notes": "e.g., Lot #12345, Valid until 12/2025. Keep enzyme on ice."
+},
+  "footer": {
+    "developedBy": "Developed by: {{name}} | © {{year}}"
+  }
+}

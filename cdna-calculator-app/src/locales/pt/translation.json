@@ -1,0 +1,60 @@
+{
+  "title": "Master Mix Calculator Pro",
+  "subtitle": "Ferramenta profissional para cálculo de reagentes em protocolos de laboratório",
+  "settings": {
+    "title": "Configurações",
+    "description": "Configure seu kit e parâmetros de reação",
+    "kitLabel": "Kit de Reagentes",
+    "samplesLabel": "Número de Amostras",
+    "safetyMarginLabel": "Margem de Segurança",
+    "extraSamples": "Amostras Extras",
+    "extraPercentage": "Porcentagem Extra (%)"
+  },
+  "buttons": {
+    "addKit": "Adicionar Novo Kit",
+    "addReagent": "Adicionar Reagente",
+    "manageKits": "Gerenciar Kits",
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "import": "Importar Kits (.json)",
+    "export": "Exportar Kits (.json)",
+    "cancel": "Cancelar",
+    "createKit": "Criar Kit",
+    "saveChanges": "Salvar Alterações",
+    "printProtocol": "Imprimir Protocolo"
+  },
+  "results": {
+    "title": "Resultados do Master Mix",
+    "description": "Volumes calculados para {{count}} reações",
+    "reagent": "Reagente",
+    "volumePerReaction": "Volume/Reação (µL)",
+    "totalVolume": "Volume Total (µL)",
+    "totalFinalVolume": "Volume Total Final:"
+  },
+  "savedKits": {
+    "title": "Kits Salvos",
+    "description": "Gerencie, importe ou exporte seus kits personalizados",
+    "reagentsCount": "({{count}} reagentes)"
+  },
+  "kitModal": {
+    "createTitle": "Criar Novo Kit",
+    "editTitle": "Editar Kit",
+    "description": "Configure os reagentes, protocolo e notas do seu kit",
+    "kitNameLabel": "Nome do Kit",
+    "reagentsLabel": "Reagentes",
+    "reagentNameLabel": "Nome do Reagente",
+    "volumeLabel": "Volume (µL)",
+    "protocolLabel": "Protocolo do Termociclador (Opcional)",
+    "notesLabel": "Notas (Opcional)"
+  },
+ "placeholders": {
+  "kitName": "Ex: SuperScript IV VILO",
+  "reagentName": "Ex: Buffer de Reação 5X",
+  "protocol": "Ex: 1. Annealing: 65°C por 5 min\n2. Síntese: 50°C por 50 min",
+  "notes": "Ex: Lote #12345, Válido até 12/2025. Manter enzima no gelo."
+},
+
+  "footer": {
+    "developedBy": "Desenvolvido por: {{name}} | © {{year}}"
+  }
+}
