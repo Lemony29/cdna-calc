@@ -32,6 +32,30 @@ export function suggestDilution(rnaVolume, freeVolume) {
   return null;
 }
 
+/** Receita da diluição: volume de RNA + água para um fator 1:F (≥ 1 µL de RNA para pipetar com precisão). */
+export function getDilutionRecipe(factor) {
+  const rnaVolume = factor <= 10 ? 2 : 1;
+  return { rnaVolume, waterVolume: rnaVolume * (factor - 1) };
+}
+
+/** Marca a amostra como diluída 1:F e atualiza a concentração (guarda a original para desfazer). */
+export function applyDilution(sample, factor) {
+  const original = sample.originalConcentration ?? sample.concentration;
+  const totalFactor = (sample.dilutionFactor || 1) * factor;
+  const originalValue = parseNumber(original);
+  if (!Number.isFinite(originalValue) || !(factor > 1)) return sample;
+  const diluted = Math.round((originalValue / totalFactor) * 100) / 100;
+  return { ...sample, originalConcentration: String(original), dilutionFactor: totalFactor, concentration: String(diluted) };
+}
+
+/** Volta a amostra para a concentração original. */
+export function undoDilution(sample) {
+  if (!sample.dilutionFactor) return sample;
+  // eslint-disable-next-line no-unused-vars
+  const { dilutionFactor, originalConcentration, ...rest } = sample;
+  return { ...rest, concentration: originalConcentration ?? sample.concentration };
+}
+
 /**
  * Calcula uma linha da tabela.
  * status: 'empty' | 'invalid' | 'ok' | 'low' | 'exceeds'

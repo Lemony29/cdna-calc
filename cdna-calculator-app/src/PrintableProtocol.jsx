@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatVolume } from '@/lib/samplePrep.js';
 import { getStatusText, localNumber } from '@/lib/sampleFormat.js';
+import { formatVolume, getDilutionRecipe } from '@/lib/samplePrep.js';
 
 // Este componente recebe os dados do kit e os resultados como propriedades
 const PrintableProtocol = React.forwardRef(({ kit, results, reactionCount, sampleRows = [], targetMass, freeInfo }, ref) => {
@@ -15,7 +15,7 @@ const PrintableProtocol = React.forwardRef(({ kit, results, reactionCount, sampl
     <div ref={ref} className="printable-content">
       <div className="p-8">
         <header className="mb-8 border-b pb-4">
-          <h1 className="text-3xl font-bold">{kit.id === 'default-kit' ? t('defaultKit.name') : kit.name}</h1>
+          <h1 className="text-3xl font-bold">{kit.name}</h1>
           <p className="text-md text-gray-600">{t('print.generatedOn', { date: today })}</p>
         </header>
 
@@ -70,11 +70,16 @@ const PrintableProtocol = React.forwardRef(({ kit, results, reactionCount, sampl
                 {sampleRows.filter((r) => r.status !== 'empty').map((r, i) => (
                   <tr key={r.id}>
                     <td className="border p-2">{i + 1}</td>
-                    <td className="border p-2">{r.name}</td>
+                    <td className="border p-2">{r.name}{r.dilutionFactor ? ` (${t('samples.dilutedShort', { factor: r.dilutionFactor })})` : ''}</td>
                     <td className="border p-2 text-right">{r.concentration}</td>
                     <td className="border p-2 text-right font-bold">{r.status === 'exceeds' ? '—' : formatVolume(r.rnaVolume)}</td>
                     <td className="border p-2 text-right font-bold">{r.status === 'exceeds' ? '—' : formatVolume(r.waterVolume)}</td>
-                    <td className="border p-2">{getStatusText(r, t)}</td>
+                    <td className="border p-2">
+                      {getStatusText(r, t)}
+                      {r.status === 'low' && r.dilution && (
+                        <div className="text-xs">{(() => { const d = getDilutionRecipe(r.dilution.factor); return t('samples.dilutionRecipe', { rna: localNumber(d.rnaVolume), water: localNumber(d.waterVolume) }); })()}</div>
+                      )}
+                    </td>
                     <td className="border p-2"></td>
                   </tr>
                 ))}

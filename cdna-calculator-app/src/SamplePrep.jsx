@@ -10,8 +10,11 @@ import { Textarea } from '@/components/ui/textarea.jsx';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog.jsx';
 import { FlaskConical, ClipboardPaste, Copy, Download, Plus, Trash2, Scale, AlertTriangle } from 'lucide-react';
 import {
+  applyDilution,
   calculateSamples,
   formatVolume,
+  getDilutionRecipe,
+  undoDilution,
   getNormalizedMass,
   makeSample,
   parseNumber,
@@ -47,8 +50,21 @@ function SamplePrep({ samples, onSamplesChange, targetMass, onTargetMassChange, 
   const isPt = i18n.language?.startsWith('pt');
 
   const updateSample = (index, field, value) => {
-    onSamplesChange(samples.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
+    onSamplesChange(
+      samples.map((s, i) => {
+        if (i !== index) return s;
+        // editar a concentração à mão desfaz o registro de diluição
+        if (field === 'concentration' && s.dilutionFactor) {
+          // eslint-disable-next-line no-unused-vars
+          const { dilutionFactor, originalConcentration, ...rest } = s;
+          return { ...rest, concentration: value };
+        }
+        return { ...s, [field]: value };
+      })
+    );
   };
+
+  const replaceSample = (index, newSample) => onSamplesChange(samples.map((s, i) => (i === index ? newSample : s)));
 
   const removeSample = (index) => {
     const next = samples.filter((_, i) => i !== index);
@@ -96,7 +112,7 @@ function SamplePrep({ samples, onSamplesChange, targetMass, onTargetMassChange, 
       return localized && isPt ? s.replace('.', ',') : s;
     };
     const vol = (r, v) => (r.status === 'exceeds' ? '—' : f(v));
-    const body = rows.map((r) => [r.name, conc(r.concentration), vol(r, r.rnaVolume), vol(r, r.waterVolume), getStatusText(r, t)]);
+    const body = rows.map((r) => [r.dilutionFactor ? `${r.name} (1:${r.dilutionFactor})` : r.name, conc(r.concentration), vol(r, r.rnaVolume), vol(r, r.waterVolume), getStatusText(r, t)]);
     const esc = (x) => (sep !== '\t' && /[;"\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x);
     return [header, ...body].map((cols) => cols.map((c) => esc(String(c))).join(sep)).join('\n');
   };
@@ -223,6 +239,14 @@ function SamplePrep({ samples, onSamplesChange, targetMass, onTargetMassChange, 
                       onPaste={handleCellPaste(index)}
                       aria-label={`${t('samples.colName')} ${index + 1}`}
                     />
+                    {row.dilutionFactor && (
+                      <div className="mt-1 text-xs text-blue-700">
+                        {t('samples.dilutedTag', { factor: row.dilutionFactor, original: localNumber(row.originalConcentration) })}{' '}
+                        <button type="button" className="underline hover:text-blue-900" onClick={() => replaceSample(index, undoDilution(samples[index]))}>
+                          {t('samples.undoDilution')}
+                        </button>
+                      </div>
+                    )}
                   </td>
                   <td className="p-1">
                     <Input
@@ -241,6 +265,17 @@ function SamplePrep({ samples, onSamplesChange, targetMass, onTargetMassChange, 
                     <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap ${STATUS_STYLES[row.status]}`}>
                       {getStatusText(row, t)}
                     </span>
+                    {row.status === 'low' && row.dilution && (() => {
+                      const recipe = getDilutionRecipe(row.dilution.factor);
+                      return (
+                        <div className="mt-1 text-xs text-gray-700 space-y-1">
+                          <div>{t('samples.dilutionRecipe', { rna: localNumber(recipe.rnaVolume), water: localNumber(recipe.waterVolume) })}</div>
+                          <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => replaceSample(index, applyDilution(samples[index], row.dilution.factor))}>
+                            {t('samples.applyDilution', { factor: row.dilution.factor })}
+                          </Button>
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td className="p-1">
                     <Button variant="ghost" size="icon" onClick={() => removeSample(index)} aria-label={t('samples.remove')}>
