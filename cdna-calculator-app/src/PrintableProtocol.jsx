@@ -4,10 +4,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { getStatusText, localNumber } from '@/lib/sampleFormat.js';
 import { formatVolume, getDilutionRecipe } from '@/lib/samplePrep.js';
+import { formatDate } from '@/lib/history.js';
 
 // Este componente recebe os dados do kit e os resultados como propriedades
-const PrintableProtocol = React.forwardRef(({ kit, results, reactionCount, sampleRows = [], targetMass, freeInfo }, ref) => {
-  const { t } = useTranslation();
+const PrintableProtocol = React.forwardRef(({ kit, results, reactionCount, sampleRows = [], targetMass, freeInfo, meta }, ref) => {
+  const { t, i18n } = useTranslation();
   const today = new Date().toLocaleDateString();
 
   return (
@@ -16,6 +17,8 @@ const PrintableProtocol = React.forwardRef(({ kit, results, reactionCount, sampl
       <div className="p-8">
         <header className="mb-8 border-b pb-4">
           <h1 className="text-3xl font-bold">{kit.name}</h1>
+          {meta?.name && <p className="text-xl font-semibold">{meta.name}</p>}
+          {meta && <p className="text-md">{t('print.experimentMeta', { date: formatDate(meta.date, i18n.language), operator: meta.operator })}</p>}
           <p className="text-md text-gray-600">{t('print.generatedOn', { date: today })}</p>
         </header>
 

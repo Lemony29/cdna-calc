@@ -7,10 +7,13 @@ import { Label } from '@/components/ui/label.jsx';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
-import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy } from 'lucide-react';
+import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy, Save, Smartphone, Printer } from 'lucide-react';
 import Footer from './Footer.jsx';
 import PrintableProtocol from './PrintableProtocol.jsx';
 import SamplePrep from './SamplePrep.jsx';
+import ExperimentHistory, { SaveExperimentDialog } from './ExperimentHistory.jsx';
+import BenchMode from './BenchMode.jsx';
+import { buildExperiment, experimentSampleRows, loadHistory, mergeHistory, saveHistory, setLastOperator } from '@/lib/history.js';
 import { DEFAULT_REACTION_VOLUME, DEFAULT_TARGET_MASS, calculateSamples, getFreeVolume, makeSample, parseNumber, resizeSamples } from '@/lib/samplePrep.js';
 // 1. Importar o hook de tradução
 import { useTranslation } from 'react-i18next';
@@ -73,6 +76,13 @@ function App() {
   const [kitReactionVolume, setKitReactionVolume] = useState(DEFAULT_REACTION_VOLUME)
   
   const [copyFeedback, setCopyFeedback] = useState('');
+
+  // Histórico de experimentos e modo bancada
+  const [history, setHistory] = useState(loadHistory)
+  const [isSaveOpen, setIsSaveOpen] = useState(false)
+  const [isBenchOpen, setIsBenchOpen] = useState(false)
+  const [printExperiment, setPrintExperiment] = useState(null)
+  const [toast, setToast] = useState('')
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -107,6 +117,26 @@ function App() {
     if (n >= 1 && n <= 384) setSamples(prev => resizeSamples(prev, n))
   }
 
+  const showToast = (message) => {
+    setToast(message)
+    setTimeout(() => setToast(''), 2500)
+  }
+
+  const updateHistory = (newHistory) => {
+    setHistory(newHistory)
+    if (!saveHistory(newHistory)) alert(t('history.storageFull'))
+  }
+
+  // Imprimir um experimento do histórico: troca o conteúdo impresso, imprime e volta ao atual
+  useEffect(() => {
+    if (!printExperiment) return undefined
+    const id = setTimeout(() => {
+      window.print()
+      setPrintExperiment(null)
+    }, 50)
+    return () => clearTimeout(id)
+  }, [printExperiment])
+
   const saveKitsToStorage = (newKits) => {
     const kitsToSave = newKits.filter(kit => kit.id !== 'default-kit')
     localStorage.setItem('master-mix-kits', JSON.stringify(kitsToSave))
@@ -135,6 +165,60 @@ function App() {
   const formatReactionCount = () => {
     const f = getMultiplicationFactor()
     return Number.isInteger(f) ? String(f) : f.toFixed(1)
+  }
+
+  const handleSaveExperiment = ({ name, operator, date, includeSamples }) => {
+    const experiment = buildExperiment({
+      name, operator, date, includeSamples,
+      kit: selectedKit,
+      numberOfSamples, marginType, extraSamples, extraPercentage,
+      reactionCount: formatReactionCount(),
+      results: calculateTotalVolumes(),
+      samples, targetMass,
+    })
+    setLastOperator(experiment.operator)
+    updateHistory([experiment, ...history])
+    setIsSaveOpen(false)
+    showToast(t('history.saved'))
+  }
+
+  const deleteExperiment = (id) => {
+    if (confirm(t('history.confirmDelete'))) updateHistory(history.filter(e => e.id !== id))
+  }
+
+  const importHistory = (imported) => {
+    const { merged, addedCount } = mergeHistory(history, imported)
+    updateHistory(merged)
+    alert(t('history.importSuccess', { count: addedCount, total: imported.length }))
+  }
+
+  // Carrega um experimento salvo de volta na calculadora
+  const loadExperiment = (e) => {
+    if (!confirm(t('history.confirmLoad'))) return
+    const existing = kits.find(k => k.id === e.kit.id)
+    if (existing) {
+      setSelectedKitId(existing.id)
+    } else {
+      const restoredKit = { ...e.kit, id: `kit-${Date.now()}`, name: `${e.kit.name} ${t('history.restoredSuffix')}` }
+      const newKits = [...kits, restoredKit]
+      setKits(newKits)
+      saveKitsToStorage(newKits)
+      setSelectedKitId(restoredKit.id)
+    }
+    setMarginType(e.marginType || 'extra')
+    setExtraSamples(e.extraSamples ?? 0)
+    setExtraPercentage(e.extraPercentage ?? 10)
+    if (e.samples && e.samples.length) {
+      setSamples(e.samples.map(s => ({ ...s })))
+      setNumberOfSamples(e.samples.length)
+      setTargetMass(e.targetMass ?? String(DEFAULT_TARGET_MASS))
+    } else {
+      const n = Math.max(1, e.numberOfSamples || 1)
+      setNumberOfSamples(n)
+      setSamples(prev => resizeSamples(prev, n))
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    showToast(t('history.loaded'))
   }
 
   const getTotalFinalVolume = () => {
@@ -301,7 +385,11 @@ function App() {
           <p className="text-lg text-gray-600">
             {t('subtitle')}
           </p>
-          <div className="mt-4 flex justify-center gap-2">
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <Button className="bg-green-700 hover:bg-green-800 text-white" onClick={() => setIsBenchOpen(true)}>
+              <Smartphone className="h-4 w-4 mr-2" />
+              {t('bench.open')}
+            </Button>
             <Button 
               variant={i18n.language.startsWith('pt') ? 'default' : 'outline'}
               onClick={() => i18n.changeLanguage('pt')}
@@ -319,7 +407,7 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
-            <Card className="sticky top-6">
+            <Card className="lg:sticky lg:top-6">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
@@ -390,20 +478,25 @@ function App() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                   <div>
                     <CardTitle>{t('results.title')}</CardTitle>
                     <CardDescription>{t('results.description', { count: formatReactionCount() })}</CardDescription>
                   </div>
-  			<div className="flex gap-2"> {/* Criamos um div para agrupar os botões */}
-    			  <Button variant="outline" size="sm" onClick={() => window.print()}>
-                             {t('buttons.printProtocol')}
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => setIsSaveOpen(true)}>
+                      <Save className="h-4 w-4 mr-2" />
+                      {t('history.saveTitle')}
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => window.print()}>
+                      <Printer className="h-4 w-4 mr-2" />
+                      {t('buttons.printProtocol')}
                     </Button>
                   <Button variant="outline" size="sm" onClick={copyResultsToClipboard}>
                     <Copy className="h-4 w-4 mr-2" />
                     {copyFeedback || t('buttons.copy')}
                   </Button>
-                 </div>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -420,13 +513,21 @@ function App() {
               freeInfo={freeInfo}
             />
 
+            <ExperimentHistory
+              history={history}
+              onDelete={deleteExperiment}
+              onLoad={loadExperiment}
+              onPrint={setPrintExperiment}
+              onImport={importHistory}
+            />
+
             <Card>
               <CardHeader>
                 <CardTitle>{t('savedKits.title')}</CardTitle>
                 <CardDescription>{t('savedKits.description')}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-2 mb-4">
+                <div className="flex flex-col sm:flex-row gap-2 mb-4">
                   <Button onClick={() => fileInputRef.current.click()} variant="outline" className="flex-1"><Upload className="h-4 w-4 mr-2" />{t('buttons.import')}</Button>
                   <input type="file" ref={fileInputRef} onChange={handleImportKits} accept=".json" className="hidden" />
                   <Button onClick={handleExportKits} variant="outline" className="flex-1"><Download className="h-4 w-4 mr-2" />{t('buttons.export')}</Button>
@@ -504,16 +605,56 @@ function App() {
 
         <Footer />
       </div>
+
+      {isSaveOpen && <SaveExperimentDialog
+        open={isSaveOpen}
+        onOpenChange={setIsSaveOpen}
+        onSave={handleSaveExperiment}
+        hasSamples={samples.some(s => s.concentration !== '')}
+        kitName={selectedKit.name}
+        reactionCount={formatReactionCount()}
+      />}
+
+      {isBenchOpen && (
+        <BenchMode
+          kit={selectedKit}
+          results={calculateTotalVolumes()}
+          reactionCount={formatReactionCount()}
+          sampleRows={calculateSamples(samples, parseNumber(targetMass), freeInfo.freeVolume)}
+          freeInfo={freeInfo}
+          targetMass={targetMass}
+          onExit={() => setIsBenchOpen(false)}
+          onSave={() => setIsSaveOpen(true)}
+        />
+      )}
+
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] rounded-full bg-gray-900 text-white px-5 py-3 text-sm shadow-lg" role="status">
+          {toast}
+        </div>
+      )}
     </div>
 
-    <PrintableProtocol
-      kit={selectedKit}
-      results={calculateTotalVolumes()}
-      reactionCount={formatReactionCount()}
-      sampleRows={calculateSamples(samples, parseNumber(targetMass), freeInfo.freeVolume)}
-      targetMass={targetMass}
-      freeInfo={freeInfo}
-    />
+    {printExperiment ? (
+      <PrintableProtocol
+        kit={printExperiment.kit}
+        results={printExperiment.results}
+        reactionCount={printExperiment.reactionCount}
+        sampleRows={experimentSampleRows(printExperiment)}
+        targetMass={printExperiment.targetMass}
+        freeInfo={getFreeVolume(printExperiment.kit)}
+        meta={printExperiment}
+      />
+    ) : (
+      <PrintableProtocol
+        kit={selectedKit}
+        results={calculateTotalVolumes()}
+        reactionCount={formatReactionCount()}
+        sampleRows={calculateSamples(samples, parseNumber(targetMass), freeInfo.freeVolume)}
+        targetMass={targetMass}
+        freeInfo={freeInfo}
+      />
+    )}
 </>
   )
 }
