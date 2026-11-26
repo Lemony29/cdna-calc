@@ -70,7 +70,8 @@
     "none": "No protocol defined."
   },
   "print": {
-    "generatedOn": "Protocol, Master Mix and Samples — generated on {{date}}"
+    "generatedOn": "Protocol, Master Mix and Samples — generated on {{date}}",
+    "experimentMeta": "Experiment date: {{date}} · Operator: {{operator}}"
   },
   "alerts": {
     "fillAllFields": "Fill in the kit name and the name and volume (> 0) of every reagent.",
@@ -125,5 +126,57 @@
     "dilutedTag": "diluted 1:{{factor}} (was {{original}} ng/µL) ·",
     "undoDilution": "undo",
     "dilutedShort": "diluted 1:{{factor}}"
+  },
+  "history": {
+    "title": "Experiment History",
+    "description": "Experiments saved in this browser — open, print or load back into the calculator",
+    "saveTitle": "Save experiment",
+    "saveDescription": "{{kit}} · {{count}} reactions",
+    "nameLabel": "Experiment name (optional)",
+    "namePlaceholder": "e.g., cDNA transplant cohort — batch 3",
+    "operatorLabel": "Operator (student)",
+    "operatorPlaceholder": "Who ran the experiment",
+    "operatorRequired": "Enter who ran the experiment.",
+    "dateLabel": "Date",
+    "includeSamples": "Include the sample table (RNA + water)",
+    "noSamples": "No sample table filled in",
+    "saveButton": "Save",
+    "saved": "Experiment saved to history",
+    "loaded": "Experiment loaded into the calculator",
+    "searchPlaceholder": "Search by name, operator, kit or sample",
+    "import": "Import",
+    "export": "Export",
+    "empty": "No experiments saved yet. Use \"Save experiment\" in the master mix results.",
+    "noResults": "No experiments found.",
+    "reactions": "{{count}} reactions",
+    "samplesCount": "{{count}} samples",
+    "view": "View",
+    "loadButton": "Load into calculator",
+    "delete": "Delete",
+    "confirmDelete": "Delete this experiment from history?",
+    "confirmLoad": "Load this experiment? The current settings and sample table will be replaced.",
+    "restoredSuffix": "(from history)",
+    "nothingToExport": "There are no experiments to export.",
+    "importInvalid": "The file must contain a list of experiments.",
+    "importSuccess": "{{count}} of {{total}} experiment(s) imported. Duplicates were skipped.",
+    "storageFull": "Could not save: browser storage is full. Export the history and delete old experiments."
+  },
+  "bench": {
+    "open": "Bench mode",
+    "title": "Bench mode",
+    "exit": "Exit",
+    "progress": "{{done}} of {{total}} steps",
+    "reset": "Uncheck all",
+    "confirmReset": "Uncheck all steps?",
+    "smaller": "Smaller text",
+    "bigger": "Larger text",
+    "screenOn": "Screen kept on",
+    "step1": "1. Master mix · {{count}} reactions",
+    "step2Title": "2. Dispense the mix",
+    "step2": "Into each of the {{count}} tubes",
+    "step3": "3. Samples · {{mass}} ng per tube",
+    "step3Hint": "Pipette water first, then RNA. Tap a tube to check it off.",
+    "water": "1st Water (µL)",
+    "rna": "2nd RNA (µL)"
   }
 }

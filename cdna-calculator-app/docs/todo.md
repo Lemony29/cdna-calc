@@ -62,9 +62,9 @@
 - [x] Protocolo do kit padrão: síntese de 120 min em 2 × 60 min (limite do termociclador do lab)
 - [x] Logo otimizado (5 MB → ~50 KB) e limpeza de arquivos soltos em `src/`
 
-## Próximos
-- [ ] Histórico de experimentos (data, kit, lote, operador, amostras) — melhorar a forma de salvar
-- [ ] Modo bancada (letras grandes, checklist por tubo, funcionar offline)
+- [x] Histórico de experimentos: nome (opcional), responsável, data e tabela de amostras; ver, imprimir, carregar, exportar/importar
+- [x] Modo bancada para celular/tablet: checklist do mix e dos tubos, letras ajustáveis, tela sempre acesa
+- [x] App instalável e offline (PWA)
 
 ## Lista de finalização
 - [ ] Controles No-RT e NTC (mix sem transcriptase calculado automaticamente)
