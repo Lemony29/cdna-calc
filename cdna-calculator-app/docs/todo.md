@@ -51,3 +51,24 @@
 - ✅ Validação de dados
 - ✅ Deploy realizado
 
+
+---
+
+# Roadmap (nov/2026)
+
+## Feito
+- [x] Tabela de preparo das amostras (RNA + água), normalizar massa, colar do Excel, CSV, impressão (PR #1)
+- [x] Diluição pronta: receita (µL de RNA + água) e botão "Já diluí" que atualiza a concentração
+- [x] Protocolo do kit padrão: síntese de 120 min em 2 × 60 min (limite do termociclador do lab)
+- [x] Logo otimizado (5 MB → ~50 KB) e limpeza de arquivos soltos em `src/`
+
+## Próximos
+- [ ] Histórico de experimentos (data, kit, lote, operador, amostras) — melhorar a forma de salvar
+- [ ] Modo bancada (letras grandes, checklist por tubo, funcionar offline)
+
+## Lista de finalização
+- [ ] Controles No-RT e NTC (mix sem transcriptase calculado automaticamente)
+- [ ] Qualidade do RNA na tabela (A260/280 e A260/230 ao colar do NanoDrop)
+- [ ] Kits compartilhados pelo laboratório (banco na nuvem + login)
+- [ ] Testes automáticos das fórmulas de cálculo
+- [ ] Mapa de placas: já existe em outro app (qplate-architect.vercel.app) — avaliar integração

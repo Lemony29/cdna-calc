@@ -28,9 +28,14 @@ const defaultKit = {
     { name: 'H2O DEPC', volumePerReaction: 3.2 },
   ],
   reactionVolume: 20,
-  protocol: '1. Annealing: 25°C por 10 min\n2. Síntese: 37°C por 60 min\n3. Inativação: 85°C por 5 min',
+  protocol: '1. Annealing: 25°C por 10 min\n2. Síntese: 37°C por 60 min\n3. Síntese: 37°C por 60 min (2º ciclo, total 120 min)\n4. Inativação: 85°C por 5 min\n5. Hold: 4°C',
   notes: 'Este é um kit genérico. Crie o seu próprio para protocolos específicos.'
 }
+
+// O kit padrão aparece no idioma escolhido (nome, protocolo e notas vêm das traduções)
+const localizeKit = (kit, t) => kit.id === 'default-kit'
+  ? { ...kit, name: t('defaultKit.name'), protocol: t('defaultKit.protocol'), notes: t('defaultKit.notes') }
+  : kit
 
 function App() {
   // 2. Inicializar o hook de tradução
@@ -107,7 +112,7 @@ function App() {
     localStorage.setItem('master-mix-kits', JSON.stringify(kitsToSave))
   }
 
-  const selectedKit = kits.find(kit => kit.id === selectedKitId) || defaultKit
+  const selectedKit = localizeKit(kits.find(kit => kit.id === selectedKitId) || defaultKit, t)
   const freeInfo = getFreeVolume(selectedKit)
 
   const getMultiplicationFactor = () => {
@@ -335,7 +340,7 @@ function App() {
                       <SelectContent>
                         {kits.map(kit => (
                           <SelectItem key={kit.id} value={kit.id}>
-                            {kit.id === 'default-kit' ? t('defaultKit.name') : kit.name}
+                            {localizeKit(kit, t).name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -350,7 +355,7 @@ function App() {
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle className="flex items-center gap-2"><Thermometer className="h-5 w-5" />{t('protocol.title')}</DialogTitle>
-                          <DialogDescription>{selectedKit.id === 'default-kit' ? t('defaultKit.name') : selectedKit.name}</DialogDescription>
+                          <DialogDescription>{selectedKit.name}</DialogDescription>
                         </DialogHeader>
                         <div className="p-4 bg-gray-50 rounded-lg whitespace-pre-wrap text-sm font-mono">{selectedKit.protocol || t('protocol.none')}</div>
                         {selectedKit.notes && (
@@ -429,7 +434,7 @@ function App() {
                 <div className="space-y-2">
                   {kits.map(kit => (
                     <div key={kit.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                      <div><span className="font-medium">{kit.id === 'default-kit' ? t('defaultKit.name') : kit.name}</span><span className="text-sm text-gray-500 ml-2">{t('savedKits.reagentsCount', { count: kit.reagents.length })}</span></div>
+                      <div><span className="font-medium">{localizeKit(kit, t).name}</span><span className="text-sm text-gray-500 ml-2">{t('savedKits.reagentsCount', { count: kit.reagents.length })}</span></div>
                       <div className="flex gap-2">
                         {kit.id !== 'default-kit' && (
                           <><Button variant="ghost" size="icon" onClick={() => openKitModal(kit)}><Edit className="h-4 w-4" /></Button><Button variant="ghost" size="icon" onClick={() => deleteKit(kit.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button></>

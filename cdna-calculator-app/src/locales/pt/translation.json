@@ -60,7 +60,9 @@
     "developedBy": "Desenvolvido por: {{name}} | © {{year}}"
   },
   "defaultKit": {
-    "name": "Kit Genérico (Exemplo)"
+    "name": "Kit Genérico (Exemplo)",
+    "protocol": "1. Annealing: 25°C por 10 min\n2. Síntese: 37°C por 60 min\n3. Síntese: 37°C por 60 min (2º ciclo, total 120 min)\n4. Inativação: 85°C por 5 min\n5. Hold: 4°C",
+    "notes": "Kit genérico. A síntese de 120 min está dividida em 2 × 60 min porque o termociclador do lab limita cada etapa a 60 min. Crie o seu próprio kit para outros protocolos."
   },
   "protocol": {
     "title": "Protocolo do Termociclador",
@@ -117,6 +119,11 @@
     "pasteDescription": "Cole as linhas do Excel, NanoDrop ou CSV. A 1ª coluna é o nome e o 1º número depois dela é a concentração (ng/µL). Cabeçalhos são ignorados.",
     "pastePreview": "{{count}} amostra(s) reconhecida(s)",
     "pasteAppend": "Adicionar ao final",
-    "pasteReplace": "Substituir tabela"
+    "pasteReplace": "Substituir tabela",
+    "dilutionRecipe": "Preparar: {{rna}} µL de RNA + {{water}} µL de água",
+    "applyDilution": "Já diluí 1:{{factor}}",
+    "dilutedTag": "diluída 1:{{factor}} (era {{original}} ng/µL) ·",
+    "undoDilution": "desfazer",
+    "dilutedShort": "diluída 1:{{factor}}"
   }
 }
