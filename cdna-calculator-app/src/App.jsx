@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge.jsx';
 import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy } from 'lucide-react';
 import Footer from './Footer.jsx';
 import PrintableProtocol from './PrintableProtocol.jsx';
+import SamplePrep from './SamplePrep.jsx';
+import { DEFAULT_REACTION_VOLUME, DEFAULT_TARGET_MASS, calculateSamples, getFreeVolume, makeSample, parseNumber, resizeSamples } from '@/lib/samplePrep.js';
 // 1. Importar o hook de tradução
 import { useTranslation } from 'react-i18next';
 
@@ -23,8 +25,9 @@ const defaultKit = {
     { name: 'Primers', volumePerReaction: 2 },
     { name: 'Inibidor de RNase', volumePerReaction: 1 },
     { name: 'Transcriptase Reversa', volumePerReaction: 1 },
-    { name: 'H20 DEPC', volumePerReaction: 3.2 },
+    { name: 'H2O DEPC', volumePerReaction: 3.2 },
   ],
+  reactionVolume: 20,
   protocol: '1. Annealing: 25°C por 10 min\n2. Síntese: 37°C por 60 min\n3. Inativação: 85°C por 5 min',
   notes: 'Este é um kit genérico. Crie o seu próprio para protocolos específicos.'
 }
@@ -36,7 +39,19 @@ function App() {
   // Estados principais
   const [kits, setKits] = useState([defaultKit])
   const [selectedKitId, setSelectedKitId] = useState('default-kit')
-  const [numberOfSamples, setNumberOfSamples] = useState(1)
+  // Tabela de amostras (RNA + água) — carregada do navegador já na inicialização
+  const [savedSamplePrep] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('master-mix-samples'))
+      if (saved && Array.isArray(saved.samples) && saved.samples.length) return saved
+    } catch (error) {
+      console.error("Erro ao carregar amostras do localStorage:", error)
+    }
+    return null
+  })
+  const [samples, setSamples] = useState(() => savedSamplePrep?.samples || [makeSample(0)])
+  const [targetMass, setTargetMass] = useState(() => savedSamplePrep?.targetMass ?? String(DEFAULT_TARGET_MASS))
+  const [numberOfSamples, setNumberOfSamples] = useState(() => savedSamplePrep?.samples.length || 1)
   const [marginType, setMarginType] = useState('extra')
   const [extraSamples, setExtraSamples] = useState(2)
   const [extraPercentage, setExtraPercentage] = useState(10)
@@ -50,6 +65,7 @@ function App() {
   const [kitReagents, setKitReagents] = useState([{ name: '', volumePerReaction: 0 }])
   const [kitProtocol, setKitProtocol] = useState('')
   const [kitNotes, setKitNotes] = useState('')
+  const [kitReactionVolume, setKitReactionVolume] = useState(DEFAULT_REACTION_VOLUME)
   
   const [copyFeedback, setCopyFeedback] = useState('');
   const fileInputRef = useRef(null);
@@ -66,12 +82,33 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('master-mix-samples', JSON.stringify({ samples, targetMass }))
+    } catch (error) {
+      console.error("Erro ao salvar amostras no localStorage:", error)
+    }
+  }, [samples, targetMass])
+
+  // A tabela de amostras e o "Número de Amostras" ficam sempre sincronizados
+  const handleSamplesChange = (newSamples) => {
+    setSamples(newSamples)
+    setNumberOfSamples(newSamples.length)
+  }
+
+  const handleNumberOfSamplesChange = (value) => {
+    setNumberOfSamples(value)
+    const n = parseInt(value, 10)
+    if (n >= 1 && n <= 384) setSamples(prev => resizeSamples(prev, n))
+  }
+
   const saveKitsToStorage = (newKits) => {
     const kitsToSave = newKits.filter(kit => kit.id !== 'default-kit')
     localStorage.setItem('master-mix-kits', JSON.stringify(kitsToSave))
   }
 
   const selectedKit = kits.find(kit => kit.id === selectedKitId) || defaultKit
+  const freeInfo = getFreeVolume(selectedKit)
 
   const getMultiplicationFactor = () => {
     const numSamples = Number(numberOfSamples) || 0;
@@ -90,6 +127,11 @@ function App() {
     }))
   }
 
+  const formatReactionCount = () => {
+    const f = getMultiplicationFactor()
+    return Number.isInteger(f) ? String(f) : f.toFixed(1)
+  }
+
   const getTotalFinalVolume = () => {
     const volumes = calculateTotalVolumes()
     return volumes.reduce((sum, reagent) => sum + parseFloat(reagent.totalVolume), 0).toFixed(2)
@@ -102,12 +144,14 @@ function App() {
       setKitReagents([...kit.reagents])
       setKitProtocol(kit.protocol || '')
       setKitNotes(kit.notes || '')
+      setKitReactionVolume(kit.reactionVolume ?? DEFAULT_REACTION_VOLUME)
     } else {
       setEditingKit(null)
       setKitName('')
       setKitReagents([{ name: '', volumePerReaction: 0 }])
       setKitProtocol('')
       setKitNotes('')
+      setKitReactionVolume(DEFAULT_REACTION_VOLUME)
     }
     setIsKitModalOpen(true)
   }
@@ -133,13 +177,19 @@ function App() {
       alert(t('alerts.fillAllFields'));
       return
     }
+    const reactionVolume = parseNumber(kitReactionVolume)
+    if (!(reactionVolume > 0)) {
+      alert(t('alerts.invalidReactionVolume'));
+      return
+    }
 
     const newKit = {
       id: editingKit ? editingKit.id : `kit-${Date.now()}`,
       name: kitName,
       reagents: kitReagents.filter(r => r.name.trim()),
       protocol: kitProtocol,
-      notes: kitNotes
+      notes: kitNotes,
+      reactionVolume
     }
 
     let newKits
@@ -217,7 +267,7 @@ function App() {
   }
 
   const copyResultsToClipboard = () => {
-    const factor = getMultiplicationFactor().toFixed(1);
+    const factor = formatReactionCount();
     const header = `${t('results.title')} ${t('results.description', { count: factor })}\n`;
     const tableHeader = `${t('results.reagent')}\t${t('results.volumePerReaction')}\t${t('results.totalVolume')}\n`;
     const tableBody = calculateTotalVolumes().map(r => 
@@ -230,7 +280,7 @@ function App() {
       setTimeout(() => setCopyFeedback(''), 2000);
     }).catch(err => {
       console.error('Erro ao copiar:', err);
-      setCopyFeedback('Falha ao copiar');
+      setCopyFeedback(t('alerts.copyFailed'));
       setTimeout(() => setCopyFeedback(''), 2000);
     });
   }
@@ -293,19 +343,19 @@ function App() {
                     
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="icon" title="Ver protocolo" disabled={!selectedKit.protocol}>
+                        <Button variant="outline" size="icon" title={t('buttons.viewProtocol')} disabled={!selectedKit.protocol}>
                           <Thermometer className="h-4 w-4" />
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle className="flex items-center gap-2"><Thermometer className="h-5 w-5" />{t('kitModal.protocolLabel')}</DialogTitle>
+                          <DialogTitle className="flex items-center gap-2"><Thermometer className="h-5 w-5" />{t('protocol.title')}</DialogTitle>
                           <DialogDescription>{selectedKit.id === 'default-kit' ? t('defaultKit.name') : selectedKit.name}</DialogDescription>
                         </DialogHeader>
-                        <div className="p-4 bg-gray-50 rounded-lg whitespace-pre-wrap text-sm font-mono">{selectedKit.protocol || 'Nenhum protocolo definido.'}</div>
+                        <div className="p-4 bg-gray-50 rounded-lg whitespace-pre-wrap text-sm font-mono">{selectedKit.protocol || t('protocol.none')}</div>
                         {selectedKit.notes && (
                           <>
-                            <h3 className="font-semibold mt-4">{t('kitModal.notesLabel')}:</h3>
+                            <h3 className="font-semibold mt-4">{t('protocol.notes')}:</h3>
                             <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg whitespace-pre-wrap text-sm">{selectedKit.notes}</div>
                           </>
                         )}
@@ -316,7 +366,7 @@ function App() {
 
                 <div className="space-y-2">
                   <Label htmlFor="samples">{t('settings.samplesLabel')}</Label>
-                  <Input id="samples" type="number" min="1" value={numberOfSamples} onChange={(e) => setNumberOfSamples(e.target.value)} />
+                  <Input id="samples" type="number" min="1" value={numberOfSamples} max="384" onChange={(e) => handleNumberOfSamplesChange(e.target.value)} />
                 </div>
 
                 <div className="space-y-4">
@@ -338,7 +388,7 @@ function App() {
                 <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>{t('results.title')}</CardTitle>
-                    <CardDescription>{t('results.description', { count: getMultiplicationFactor().toFixed(1) })}</CardDescription>
+                    <CardDescription>{t('results.description', { count: formatReactionCount() })}</CardDescription>
                   </div>
   			<div className="flex gap-2"> {/* Criamos um div para agrupar os botões */}
     			  <Button variant="outline" size="sm" onClick={() => window.print()}>
@@ -356,6 +406,14 @@ function App() {
                 <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200"><div className="flex justify-between items-center"><span className="text-lg font-semibold text-blue-900">{t('results.totalFinalVolume')}</span><Badge variant="secondary" className="text-lg px-4 py-2">{getTotalFinalVolume()} µL</Badge></div></div>
               </CardContent>
             </Card>
+
+            <SamplePrep
+              samples={samples}
+              onSamplesChange={handleSamplesChange}
+              targetMass={targetMass}
+              onTargetMassChange={setTargetMass}
+              freeInfo={freeInfo}
+            />
 
             <Card>
               <CardHeader>
@@ -416,6 +474,11 @@ function App() {
                 ))}
               </div>
               <div className="space-y-2">
+                <Label htmlFor="kit-reaction-volume">{t('kitModal.reactionVolumeLabel')}</Label>
+                <Input id="kit-reaction-volume" type="number" step="0.5" min="1" className="w-32" value={kitReactionVolume} onChange={(e) => setKitReactionVolume(e.target.value)} />
+                <p className="text-xs text-gray-500">{t('kitModal.reactionVolumeHint', { mix: kitReagents.reduce((sum, r) => sum + (Number(r.volumePerReaction) || 0), 0).toFixed(2) })}</p>
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="kit-protocol">{t('kitModal.protocolLabel')}</Label>
                 <Textarea id="kit-protocol" value={kitProtocol} onChange={(e) => setKitProtocol(e.target.value)} rows={4} placeholder={t('placeholders.protocol')} />
               </div>
@@ -431,9 +494,6 @@ function App() {
           </DialogContent>
         </Dialog>
 
-<Dialog open={isKitModalOpen} onOpenChange={setIsKitModalOpen}>
-        {/* ... todo o conteúdo do seu modal ... */}
-    </Dialog>
 
 
 
@@ -441,7 +501,14 @@ function App() {
       </div>
     </div>
 
-    <PrintableProtocol kit={selectedKit} results={calculateTotalVolumes()} />
+    <PrintableProtocol
+      kit={selectedKit}
+      results={calculateTotalVolumes()}
+      reactionCount={formatReactionCount()}
+      sampleRows={calculateSamples(samples, parseNumber(targetMass), freeInfo.freeVolume)}
+      targetMass={targetMass}
+      freeInfo={freeInfo}
+    />
 </>
   )
 }

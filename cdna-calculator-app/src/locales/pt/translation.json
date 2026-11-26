@@ -21,7 +21,8 @@
     "cancel": "Cancelar",
     "createKit": "Criar Kit",
     "saveChanges": "Salvar Alterações",
-    "printProtocol": "Imprimir Protocolo"
+    "printProtocol": "Imprimir Protocolo",
+    "viewProtocol": "Ver protocolo"
   },
   "results": {
     "title": "Resultados do Master Mix",
@@ -45,16 +46,77 @@
     "reagentNameLabel": "Nome do Reagente",
     "volumeLabel": "Volume (µL)",
     "protocolLabel": "Protocolo do Termociclador (Opcional)",
-    "notesLabel": "Notas (Opcional)"
+    "notesLabel": "Notas (Opcional)",
+    "reactionVolumeLabel": "Volume final da reação (µL)",
+    "reactionVolumeHint": "Master mix por reação: {{mix}} µL. O que sobrar até o volume final é preenchido com RNA + água na tabela de amostras."
   },
- "placeholders": {
-  "kitName": "Ex: SuperScript IV VILO",
-  "reagentName": "Ex: Buffer de Reação 5X",
-  "protocol": "Ex: 1. Annealing: 65°C por 5 min\n2. Síntese: 50°C por 50 min",
-  "notes": "Ex: Lote #12345, Válido até 12/2025. Manter enzima no gelo."
-},
-
+  "placeholders": {
+    "kitName": "Ex: SuperScript IV VILO",
+    "reagentName": "Ex: Buffer de Reação 5X",
+    "protocol": "Ex: 1. Annealing: 65°C por 5 min\n2. Síntese: 50°C por 50 min",
+    "notes": "Ex: Lote #12345, Válido até 12/2025. Manter enzima no gelo."
+  },
   "footer": {
     "developedBy": "Desenvolvido por: {{name}} | © {{year}}"
+  },
+  "defaultKit": {
+    "name": "Kit Genérico (Exemplo)"
+  },
+  "protocol": {
+    "title": "Protocolo do Termociclador",
+    "notes": "Notas",
+    "none": "Nenhum protocolo definido."
+  },
+  "print": {
+    "generatedOn": "Protocolo, Master Mix e Amostras — gerado em {{date}}"
+  },
+  "alerts": {
+    "fillAllFields": "Preencha o nome do kit e o nome e volume (> 0) de todos os reagentes.",
+    "invalidReactionVolume": "Informe um volume final da reação maior que zero.",
+    "confirmDelete": "Tem certeza que deseja excluir este kit?",
+    "noKitsToExport": "Não há kits personalizados para exportar.",
+    "importError": "O arquivo deve conter uma lista de kits.",
+    "importSuccess": "{{count}} de {{total}} kit(s) importado(s). Kits com ID repetido foram ignorados.",
+    "importFileError": "Erro ao importar o arquivo: {{message}}",
+    "copyFailed": "Falha ao copiar"
+  },
+  "samples": {
+    "title": "Preparo das Amostras (RNA + Água)",
+    "description": "Volume de RNA e de água por tubo, a partir da concentração de cada amostra",
+    "summary": "{{mass}} ng de RNA por reação · {{free}} µL de RNA + água por tubo",
+    "targetMassLabel": "Massa de RNA por reação (ng)",
+    "freeVolumeLabel": "Volume livre para RNA + água",
+    "freeVolumeFormula": "{{final}} µL − {{mix}} µL do mix = {{free}} µL",
+    "normalizeButton": "Normalizar ({{mass}} ng)",
+    "normalizeButtonEmpty": "Normalizar",
+    "normalizeShort": "Normalizar",
+    "noFreeVolume": "O master mix já ocupa todo o volume final da reação. Edite o kit e aumente o \"Volume final da reação\" ou reduza a água do mix.",
+    "exceedsBanner": "{{count}} amostra(s) não cabem com essa massa. A maior massa possível para todas é {{mass}} ng (limitada pela amostra {{sample}}).",
+    "lowBanner": "{{count}} amostra(s) precisam de menos de {{min}} µL de RNA — pipetagem imprecisa. Dilua a amostra e atualize a concentração.",
+    "colName": "Amostra",
+    "colConcentration": "Concentração (ng/µL)",
+    "colRna": "RNA (µL)",
+    "colWater": "Água (µL)",
+    "colStatus": "Status",
+    "status": {
+      "ok": "OK",
+      "low": "< {{min}} µL — diluir",
+      "lowDilute": "Diluir 1:{{factor}} → {{volume}} µL",
+      "exceeds": "Não cabe",
+      "invalid": "Valor inválido",
+      "empty": "—"
+    },
+    "totals": "Total (amostras válidas)",
+    "addSample": "Adicionar amostra",
+    "remove": "Remover amostra",
+    "clear": "Limpar tabela",
+    "confirmClear": "Apagar todas as amostras da tabela?",
+    "hint": "Dica: copie as colunas Nome e Concentração do Excel ou do NanoDrop e cole direto numa célula da tabela. O número de linhas acompanha o \"Número de Amostras\" do master mix.",
+    "pasteButton": "Colar do Excel",
+    "pasteTitle": "Colar amostras",
+    "pasteDescription": "Cole as linhas do Excel, NanoDrop ou CSV. A 1ª coluna é o nome e o 1º número depois dela é a concentração (ng/µL). Cabeçalhos são ignorados.",
+    "pastePreview": "{{count}} amostra(s) reconhecida(s)",
+    "pasteAppend": "Adicionar ao final",
+    "pasteReplace": "Substituir tabela"
   }
 }
