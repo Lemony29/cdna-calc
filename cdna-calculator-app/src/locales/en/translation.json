@@ -21,7 +21,8 @@
     "cancel": "Cancel",
     "createKit": "Create Kit",
     "saveChanges": "Save Changes",
-    "printProtocol": "Print Protocol"
+    "printProtocol": "Print Protocol",
+    "viewProtocol": "View protocol"
   },
   "results": {
     "title": "Master Mix Results",
@@ -45,15 +46,77 @@
     "reagentNameLabel": "Reagent Name",
     "volumeLabel": "Volume (µL)",
     "protocolLabel": "Thermocycler Protocol (Optional)",
-    "notesLabel": "Notes (Optional)"
+    "notesLabel": "Notes (Optional)",
+    "reactionVolumeLabel": "Final reaction volume (µL)",
+    "reactionVolumeHint": "Master mix per reaction: {{mix}} µL. The remainder up to the final volume is filled with RNA + water in the sample table."
   },
- "placeholders": {
-  "kitName": "e.g., SuperScript IV VILO",
-  "reagentName": "e.g., 5X Reaction Buffer",
-  "protocol": "e.g., 1. Annealing: 65°C for 5 min\n2. Synthesis: 50°C for 50 min",
-  "notes": "e.g., Lot #12345, Valid until 12/2025. Keep enzyme on ice."
-},
+  "placeholders": {
+    "kitName": "e.g., SuperScript IV VILO",
+    "reagentName": "e.g., 5X Reaction Buffer",
+    "protocol": "e.g., 1. Annealing: 65°C for 5 min\n2. Synthesis: 50°C for 50 min",
+    "notes": "e.g., Lot #12345, Valid until 12/2025. Keep enzyme on ice."
+  },
   "footer": {
     "developedBy": "Developed by: {{name}} | © {{year}}"
+  },
+  "defaultKit": {
+    "name": "Generic Kit (Example)"
+  },
+  "protocol": {
+    "title": "Thermocycler Protocol",
+    "notes": "Notes",
+    "none": "No protocol defined."
+  },
+  "print": {
+    "generatedOn": "Protocol, Master Mix and Samples — generated on {{date}}"
+  },
+  "alerts": {
+    "fillAllFields": "Fill in the kit name and the name and volume (> 0) of every reagent.",
+    "invalidReactionVolume": "Enter a final reaction volume greater than zero.",
+    "confirmDelete": "Are you sure you want to delete this kit?",
+    "noKitsToExport": "There are no custom kits to export.",
+    "importError": "The file must contain a list of kits.",
+    "importSuccess": "{{count}} of {{total}} kit(s) imported. Kits with duplicate IDs were skipped.",
+    "importFileError": "Error importing file: {{message}}",
+    "copyFailed": "Copy failed"
+  },
+  "samples": {
+    "title": "Sample Preparation (RNA + Water)",
+    "description": "RNA and water volume per tube, from each sample's concentration",
+    "summary": "{{mass}} ng RNA per reaction · {{free}} µL RNA + water per tube",
+    "targetMassLabel": "RNA mass per reaction (ng)",
+    "freeVolumeLabel": "Free volume for RNA + water",
+    "freeVolumeFormula": "{{final}} µL − {{mix}} µL mix = {{free}} µL",
+    "normalizeButton": "Normalize ({{mass}} ng)",
+    "normalizeButtonEmpty": "Normalize",
+    "normalizeShort": "Normalize",
+    "noFreeVolume": "The master mix already fills the whole reaction volume. Edit the kit and increase the \"Final reaction volume\" or reduce the water in the mix.",
+    "exceedsBanner": "{{count}} sample(s) do not fit at this mass. The highest mass that fits all samples is {{mass}} ng (limited by sample {{sample}}).",
+    "lowBanner": "{{count}} sample(s) need less than {{min}} µL of RNA — imprecise pipetting. Dilute the sample and update its concentration.",
+    "colName": "Sample",
+    "colConcentration": "Concentration (ng/µL)",
+    "colRna": "RNA (µL)",
+    "colWater": "Water (µL)",
+    "colStatus": "Status",
+    "status": {
+      "ok": "OK",
+      "low": "< {{min}} µL — dilute",
+      "lowDilute": "Dilute 1:{{factor}} → {{volume}} µL",
+      "exceeds": "Does not fit",
+      "invalid": "Invalid value",
+      "empty": "—"
+    },
+    "totals": "Total (valid samples)",
+    "addSample": "Add sample",
+    "remove": "Remove sample",
+    "clear": "Clear table",
+    "confirmClear": "Delete all samples from the table?",
+    "hint": "Tip: copy the Name and Concentration columns from Excel or NanoDrop and paste straight into a table cell. The number of rows follows the master mix \"Number of Samples\".",
+    "pasteButton": "Paste from Excel",
+    "pasteTitle": "Paste samples",
+    "pasteDescription": "Paste rows from Excel, NanoDrop or CSV. The 1st column is the name and the 1st number after it is the concentration (ng/µL). Headers are ignored.",
+    "pastePreview": "{{count}} sample(s) recognized",
+    "pasteAppend": "Append",
+    "pasteReplace": "Replace table"
   }
 }
