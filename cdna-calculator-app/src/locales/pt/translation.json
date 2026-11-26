@@ -178,5 +178,10 @@
     "step3Hint": "Pipete primeiro a água, depois o RNA. Toque no tubo para marcar.",
     "water": "1º Água (µL)",
     "rna": "2º RNA (µL)"
+  },
+  "qplate": {
+    "button": "Montar placa no qPlate",
+    "hint": "Abre o qPlate Architect em outra aba com a lista de amostras",
+    "noSamples": "Preencha pelo menos uma amostra na tabela para enviar ao qPlate."
   }
 }

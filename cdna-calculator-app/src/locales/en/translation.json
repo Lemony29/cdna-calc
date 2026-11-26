@@ -178,5 +178,10 @@
     "step3Hint": "Pipette water first, then RNA. Tap a tube to check it off.",
     "water": "1st Water (µL)",
     "rna": "2nd RNA (µL)"
+  },
+  "qplate": {
+    "button": "Build plate in qPlate",
+    "hint": "Opens qPlate Architect in a new tab with the sample list",
+    "noSamples": "Fill in at least one sample in the table to send it to qPlate."
   }
 }

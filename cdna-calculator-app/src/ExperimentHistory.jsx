@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input.jsx';
 import { Label } from '@/components/ui/label.jsx';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog.jsx';
-import { History, Eye, Printer, RotateCcw, Trash2, Upload, Download, Search, User, CalendarDays, FlaskConical } from 'lucide-react';
+import { History, Eye, Printer, RotateCcw, Trash2, Upload, Download, Search, User, CalendarDays, FlaskConical, Grid3X3 } from 'lucide-react';
+import { openInQplate } from '@/lib/qplateBridge.js';
 import { experimentSampleRows, experimentSearchText, experimentTitle, formatDate, getLastOperator, todayISO } from '@/lib/history.js';
 import { formatVolume, getFreeVolume } from '@/lib/samplePrep.js';
 import { getStatusText, localNumber } from '@/lib/sampleFormat.js';
@@ -149,6 +150,11 @@ function ExperimentDetail({ experiment, onClose, onPrint, onLoad }) {
         )}
 
         <div className="flex flex-wrap gap-2 justify-end pt-4">
+          {e.samples && e.samples.length > 0 && (
+            <Button variant="outline" onClick={() => openInQplate({ project: experimentTitle(e, i18n.language), samples: e.samples }) || alert(t('qplate.noSamples'))}>
+              <Grid3X3 className="h-4 w-4 mr-2" />{t('qplate.button')}
+            </Button>
+          )}
           <Button variant="outline" onClick={() => onPrint(e)}><Printer className="h-4 w-4 mr-2" />{t('buttons.printProtocol')}</Button>
           <Button onClick={() => onLoad(e)}><RotateCcw className="h-4 w-4 mr-2" />{t('history.loadButton')}</Button>
         </div>

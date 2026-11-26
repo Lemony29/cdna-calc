@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label.jsx';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
-import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy, Save, Smartphone, Printer } from 'lucide-react';
+import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy, Save, Smartphone, Printer, ExternalLink } from 'lucide-react';
+import { QPLATE_URL } from '@/lib/qplateBridge.js';
 import Footer from './Footer.jsx';
 import PrintableProtocol from './PrintableProtocol.jsx';
 import SamplePrep from './SamplePrep.jsx';
@@ -389,6 +390,12 @@ function App() {
             <Button className="bg-green-700 hover:bg-green-800 text-white" onClick={() => setIsBenchOpen(true)}>
               <Smartphone className="h-4 w-4 mr-2" />
               {t('bench.open')}
+            </Button>
+            <Button variant="outline" asChild>
+              <a href={QPLATE_URL} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4 mr-2" />
+                qPlate Architect
+              </a>
             </Button>
             <Button 
               variant={i18n.language.startsWith('pt') ? 'default' : 'outline'}
