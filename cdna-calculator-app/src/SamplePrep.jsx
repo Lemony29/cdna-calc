@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input.jsx';
 import { Label } from '@/components/ui/label.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog.jsx';
-import { FlaskConical, ClipboardPaste, Copy, Download, Plus, Trash2, Scale, AlertTriangle } from 'lucide-react';
+import { FlaskConical, ClipboardPaste, Copy, Download, Plus, Trash2, Scale, AlertTriangle, Grid3X3 } from 'lucide-react';
+import { openInQplate } from '@/lib/qplateBridge.js';
 import {
   applyDilution,
   calculateSamples,
@@ -160,6 +161,10 @@ function SamplePrep({ samples, onSamplesChange, targetMass, onTargetMassChange, 
             <Button variant="outline" size="sm" onClick={exportCsv}>
               <Download className="h-4 w-4 mr-2" />
               CSV
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => openInQplate({ project: '', samples }) || alert(t('qplate.noSamples'))} title={t('qplate.hint')}>
+              <Grid3X3 className="h-4 w-4 mr-2" />
+              {t('qplate.button')}
             </Button>
           </div>
         </div>
