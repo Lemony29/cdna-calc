@@ -183,5 +183,91 @@
     "button": "Montar placa no qPlate",
     "hint": "Abre o qPlate Architect em outra aba com a lista de amostras",
     "noSamples": "Preencha pelo menos uma amostra na tabela para enviar ao qPlate."
+  },
+  "nav": {
+    "mastermix": "Master Mix e Amostras",
+    "calculators": "Calculadoras"
+  },
+  "calc": {
+    "volumeUnit": "Unidade de volume",
+    "clear": "Limpar",
+    "c1v1": {
+      "title": "Diluição (C1·V1 = C2·V2)",
+      "description": "Preencha três valores e deixe vazio o que quer descobrir.",
+      "c1": "C1 (estoque)",
+      "v1": "V1 (do estoque)",
+      "c2": "C2 (final)",
+      "v2": "V2 (final)",
+      "recipe": "Pipete {{v1}} {{unit}} do estoque + {{diluent}} {{unit}} de diluente.",
+      "invalid": "A concentração final não pode ser maior que a do estoque (nem V1 maior que V2).",
+      "hint": "Use a mesma unidade de concentração em C1 e C2.",
+      "leaveOne": "Deixe um dos quatro campos vazio para ser calculado."
+    },
+    "serial": {
+      "title": "Diluição seriada",
+      "description": "Curva padrão ou série de diluições a partir de um estoque.",
+      "stock": "Concentração inicial",
+      "unit": "Unidade",
+      "factor": "Fator de diluição",
+      "points": "Nº de pontos",
+      "remaining": "Volume final por tubo",
+      "recipe": "Coloque {{diluent}} µL de diluente em cada tubo. Transfira {{transfer}} µL do estoque para o tubo 1, homogeneíze e passe {{transfer}} µL para o próximo, até o último.",
+      "tube": "Tubo",
+      "concentration": "Concentração",
+      "dilution": "Diluição",
+      "note": "Cada tubo fica com {{remaining}} µL; o último fica com {{total}} µL (descarte {{transfer}} µL dele para igualar).",
+      "hint": "Fator maior que 1 e até 24 pontos."
+    },
+    "solution": {
+      "title": "Preparo de solução",
+      "description": "Quanto pesar para uma solução molar ou em % (m/v).",
+      "molar": "Molar",
+      "percent": "% (m/v)",
+      "concentration": "Concentração",
+      "volume": "Volume final",
+      "mw": "Massa molar (MM)",
+      "result": "Pese {{mass}} {{unit}}",
+      "complete": "Dissolva e complete o volume até {{volume}} {{unit}}.",
+      "hint": "Preencha a concentração, o volume e (na molar) a massa molar do reagente."
+    },
+    "primer": {
+      "title": "Ressuspensão de primer",
+      "description": "Primer liofilizado: estoque e solução de trabalho. A quantidade (nmol) vem na etiqueta ou no laudo do tubo.",
+      "nmol": "Quantidade no tubo",
+      "stock": "Estoque desejado",
+      "working": "Solução de trabalho",
+      "workingVolume": "Volume da solução de trabalho",
+      "stockResult": "Adicione {{water}} µL de água (ou TE) para estoque de {{stock}} µM.",
+      "workingResult": "Trabalho ({{volume}} µL a {{working}} µM): {{stockVolume}} µL do estoque + {{water}} µL de água.",
+      "hint": "Informe os nmol do tubo."
+    },
+    "centrifuge": {
+      "title": "Centrífuga: rpm ↔ × g",
+      "description": "RCF = 1,118 × 10⁻⁵ × raio (cm) × rpm². O raio do rotor vem no manual ou na tampa.",
+      "radius": "Raio do rotor",
+      "toG": "{{rpm}} rpm = {{g}} × g",
+      "toRpm": "{{g}} × g = {{rpm}} rpm",
+      "hint": "Informe o raio e digite rpm ou × g."
+    },
+    "cells": {
+      "title": "Contagem de células (Neubauer) e plaqueamento",
+      "description": "Conte os 4 quadrantes grandes dos cantos. Com azul de tripano 1:1, o fator de diluição é 2.",
+      "live": "Células vivas por quadrante",
+      "dead": "Células mortas por quadrante (opcional, para viabilidade)",
+      "dilution": "Fator de diluição",
+      "result": "{{perMl}} células vivas/mL",
+      "mean": "Média de {{mean}} por quadrante ({{n}} quadrantes)",
+      "viability": "viabilidade de {{v}}%",
+      "platingTitle": "Plaqueamento",
+      "perWell": "Células por poço",
+      "wells": "Nº de poços",
+      "volumePerWell": "Volume por poço",
+      "extra": "Margem extra",
+      "platingResult": "Misture {{suspension}} µL da suspensão + {{medium}} µL de meio.",
+      "platingTotal": "Total de {{total}} µL com {{cells}} células (já com a margem).",
+      "notEnough": "A suspensão está diluída demais: o volume necessário passa do volume total. Centrifugue e ressuspenda em menos meio.",
+      "platingHint": "Preencha células por poço, nº de poços e volume por poço.",
+      "countFirst": "Faça a contagem acima primeiro."
+    }
   }
 }

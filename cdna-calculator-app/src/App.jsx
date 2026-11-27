@@ -7,13 +7,14 @@ import { Label } from '@/components/ui/label.jsx';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog.jsx';
 import { Textarea } from '@/components/ui/textarea.jsx';
 import { Badge } from '@/components/ui/badge.jsx';
-import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy, Save, Smartphone, Printer, ExternalLink } from 'lucide-react';
+import { Thermometer, Settings, Plus, Edit, Trash2, Upload, Download, Copy, Save, Smartphone, Printer, ExternalLink, FlaskConical, Calculator } from 'lucide-react';
 import { QPLATE_URL } from '@/lib/qplateBridge.js';
 import Footer from './Footer.jsx';
 import PrintableProtocol from './PrintableProtocol.jsx';
 import SamplePrep from './SamplePrep.jsx';
 import ExperimentHistory, { SaveExperimentDialog } from './ExperimentHistory.jsx';
 import BenchMode from './BenchMode.jsx';
+import Calculators from './Calculators.jsx';
 import { buildExperiment, experimentSampleRows, loadHistory, mergeHistory, saveHistory, setLastOperator } from '@/lib/history.js';
 import { DEFAULT_REACTION_VOLUME, DEFAULT_TARGET_MASS, calculateSamples, getFreeVolume, makeSample, parseNumber, resizeSamples } from '@/lib/samplePrep.js';
 // 1. Importar o hook de tradução
@@ -84,6 +85,12 @@ function App() {
   const [isBenchOpen, setIsBenchOpen] = useState(false)
   const [printExperiment, setPrintExperiment] = useState(null)
   const [toast, setToast] = useState('')
+  const [view, setView] = useState(() => (window.location.hash === '#calculadoras' ? 'calculators' : 'mastermix'))
+
+  const changeView = (next) => {
+    setView(next)
+    window.history.replaceState(null, '', next === 'calculators' ? '#calculadoras' : window.location.pathname)
+  }
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -412,6 +419,20 @@ function App() {
           </div>
         </div>
 
+        <div className="mb-6 flex justify-center">
+          <div className="inline-flex rounded-lg bg-gray-200 p-1" role="tablist">
+            <button type="button" role="tab" aria-selected={view === 'mastermix'} onClick={() => changeView('mastermix')}
+              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${view === 'mastermix' ? 'bg-white shadow text-gray-900' : 'text-gray-600'}`}>
+              <FlaskConical className="h-4 w-4" />{t('nav.mastermix')}
+            </button>
+            <button type="button" role="tab" aria-selected={view === 'calculators'} onClick={() => changeView('calculators')}
+              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${view === 'calculators' ? 'bg-white shadow text-gray-900' : 'text-gray-600'}`}>
+              <Calculator className="h-4 w-4" />{t('nav.calculators')}
+            </button>
+          </div>
+        </div>
+
+        {view === 'calculators' ? <Calculators /> : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
             <Card className="lg:sticky lg:top-6">
@@ -555,6 +576,7 @@ function App() {
             </Card>
           </div>
         </div>
+        )}
 
         <Dialog open={isKitModalOpen} onOpenChange={setIsKitModalOpen}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

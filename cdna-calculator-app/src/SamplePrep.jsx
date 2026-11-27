@@ -128,7 +128,7 @@ function SamplePrep({ samples, onSamplesChange, targetMass, onTargetMassChange, 
   };
 
   const exportCsv = () => {
-    const csv = '﻿' + buildTable(';', true);
+    const csv = '\uFEFF' + buildTable(';', true);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
