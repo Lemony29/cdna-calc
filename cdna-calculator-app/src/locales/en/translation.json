@@ -183,5 +183,91 @@
     "button": "Build plate in qPlate",
     "hint": "Opens qPlate Architect in a new tab with the sample list",
     "noSamples": "Fill in at least one sample in the table to send it to qPlate."
+  },
+  "nav": {
+    "mastermix": "Master Mix & Samples",
+    "calculators": "Calculators"
+  },
+  "calc": {
+    "volumeUnit": "Volume unit",
+    "clear": "Clear",
+    "c1v1": {
+      "title": "Dilution (C1·V1 = C2·V2)",
+      "description": "Fill in three values and leave blank the one you want.",
+      "c1": "C1 (stock)",
+      "v1": "V1 (from stock)",
+      "c2": "C2 (final)",
+      "v2": "V2 (final)",
+      "recipe": "Pipette {{v1}} {{unit}} of stock + {{diluent}} {{unit}} of diluent.",
+      "invalid": "The final concentration cannot exceed the stock (nor V1 exceed V2).",
+      "hint": "Use the same concentration unit for C1 and C2.",
+      "leaveOne": "Leave one of the four fields blank to calculate it."
+    },
+    "serial": {
+      "title": "Serial dilution",
+      "description": "Standard curve or dilution series from a stock.",
+      "stock": "Starting concentration",
+      "unit": "Unit",
+      "factor": "Dilution factor",
+      "points": "Number of points",
+      "remaining": "Final volume per tube",
+      "recipe": "Put {{diluent}} µL of diluent in each tube. Transfer {{transfer}} µL of stock to tube 1, mix, and pass {{transfer}} µL to the next, down to the last.",
+      "tube": "Tube",
+      "concentration": "Concentration",
+      "dilution": "Dilution",
+      "note": "Each tube ends with {{remaining}} µL; the last one keeps {{total}} µL (discard {{transfer}} µL from it to match).",
+      "hint": "Factor above 1 and up to 24 points."
+    },
+    "solution": {
+      "title": "Solution preparation",
+      "description": "How much to weigh for a molar or % (w/v) solution.",
+      "molar": "Molar",
+      "percent": "% (w/v)",
+      "concentration": "Concentration",
+      "volume": "Final volume",
+      "mw": "Molar mass (MW)",
+      "result": "Weigh {{mass}} {{unit}}",
+      "complete": "Dissolve and bring the volume to {{volume}} {{unit}}.",
+      "hint": "Enter the concentration, volume and (for molar) the molar mass."
+    },
+    "primer": {
+      "title": "Primer resuspension",
+      "description": "Lyophilized primer: stock and working solution. The amount (nmol) is on the tube label or spec sheet.",
+      "nmol": "Amount in tube",
+      "stock": "Desired stock",
+      "working": "Working solution",
+      "workingVolume": "Working solution volume",
+      "stockResult": "Add {{water}} µL of water (or TE) for a {{stock}} µM stock.",
+      "workingResult": "Working ({{volume}} µL at {{working}} µM): {{stockVolume}} µL stock + {{water}} µL water.",
+      "hint": "Enter the nmol in the tube."
+    },
+    "centrifuge": {
+      "title": "Centrifuge: rpm ↔ × g",
+      "description": "RCF = 1.118 × 10⁻⁵ × radius (cm) × rpm². The rotor radius is in the manual or on the lid.",
+      "radius": "Rotor radius",
+      "toG": "{{rpm}} rpm = {{g}} × g",
+      "toRpm": "{{g}} × g = {{rpm}} rpm",
+      "hint": "Enter the radius and type rpm or × g."
+    },
+    "cells": {
+      "title": "Cell count (Neubauer) and plating",
+      "description": "Count the 4 large corner squares. With trypan blue 1:1, the dilution factor is 2.",
+      "live": "Live cells per square",
+      "dead": "Dead cells per square (optional, for viability)",
+      "dilution": "Dilution factor",
+      "result": "{{perMl}} live cells/mL",
+      "mean": "Mean of {{mean}} per square ({{n}} squares)",
+      "viability": "{{v}}% viability",
+      "platingTitle": "Plating",
+      "perWell": "Cells per well",
+      "wells": "Number of wells",
+      "volumePerWell": "Volume per well",
+      "extra": "Extra margin",
+      "platingResult": "Mix {{suspension}} µL of suspension + {{medium}} µL of medium.",
+      "platingTotal": "Total of {{total}} µL with {{cells}} cells (margin included).",
+      "notEnough": "The suspension is too dilute: the required volume exceeds the total. Spin down and resuspend in less medium.",
+      "platingHint": "Fill in cells per well, number of wells and volume per well.",
+      "countFirst": "Do the count above first."
+    }
   }
 }
